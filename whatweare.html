@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* ---------------- IFCI What We Are Page ---------------- */
+/* -------- ULTRA MODERN IFCI PAGE -------- */
+
+.ifci-ultra-page {
+    font-family: "Inter", sans-serif;
+    padding: 60px 80px;
+    background: #f7fbff;
+    color: #222;
+}
+
+/* HERO TITLE */
+.hero-box {
+    background: linear-gradient(135deg, #e8f6ff, #ffffff);
+    padding: 50px;
+    border-radius: 18px;
+    text-align: center;
+    margin-bottom: 60px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+}
+
+.hero-box h1 {
+    font-size: 48px;
+    font-weight: 800;
+    color: #023f73;
+    margin-bottom: 10px;
+}
+
+.hero-box p {
+    font-size: 18px;
+    opacity: .7;
+}
+
+/* GRID */
+.ultra-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 35px;
+}
+
+/* CARDS */
+.ultra-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e7e7e7;
+    transition: .35s ease;
+    transform-style: preserve-3d;
+}
+
+.ultra-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.12);
+}
+
+/* HEADINGS */
+.ultra-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #044b80;
+    margin-bottom: 14px;
+    position: relative;
+}
+
+.ultra-card h2::after {
+    content: "";
+    width: 50px;
+    height: 3px;
+    background: #00a4e8;
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    border-radius: 20px;
+}
+
+/* TEXT */
+.ultra-card p {
+    margin-top: 14px;
+    font-size: 17px;
+    line-height: 1.65;
+}
+
+.ultra-card b {
+    color: #022f59;
+}
+
+/* ANIMATIONS */
+.animate-fade {
+    animation: fadeIn 1s ease forwards;
+    opacity: 0;
+}
+
+.animate-up {
+    opacity: 0;
+    animation: slideUp .9s ease forwards;
+}
+
+.delay-1 { animation-delay: .2s; }
+.delay-2 { animation-delay: .4s; }
+.delay-3 { animation-delay: .6s; }
+.delay-4 { animation-delay: .8s; }
+.delay-5 { animation-delay: 1s; }
+.delay-6 { animation-delay: 1.2s; }
+
+@keyframes slideUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .ifci-ultra-page {
+        padding: 30px;
+    }
+    .hero-box h1 {
+        font-size: 32px;
+    }
+}
+
+</style>
+<body>
+    <section class="ifci-ultra-page">
+
+        <!-- Modern Page Title -->
+        <div class="hero-box animate-fade">
+            <h1>What We Are</h1>
+            <p>Driving India’s Industrial Growth Through Financial Empowerment Since 1948</p>
+        </div>
+    
+        <!-- Grid Layout -->
+        <div class="ultra-grid">
+    
+            <!-- BLOCK 1 -->
+            <div class="ultra-card animate-up">
+                <h2>Institutional Identity</h2>
+                <p>
+                    IFCI is a Systemically Important NBFC-ND-SI in the public sector established in 1948. 
+                    Listed on BSE & NSE, IFCI operates with six subsidiaries and one associate company.
+                </p>
+            </div>
+    
+            <!-- BLOCK 2 -->
+            <div class="ultra-card animate-up delay-1">
+                <h2>Diverse Financial Mandate</h2>
+                <p>
+                    IFCI supports national industrial growth across sectors such as 
+                    <b>airports, highways, telecom, power, real estate, manufacturing</b> and more.
+                </p>
+                <p>
+                    Iconic projects supported include <b>Adani Mundra Port, GMR Goa Airport, 
+                    NRSS Transmission, Salasar Highways</b> etc.
+                </p>
+            </div>
+    
+            <!-- BLOCK 3 -->
+            <div class="ultra-card animate-up delay-2">
+                <h2>Government Advisory</h2>
+                <p>
+                    IFCI is the <b>Project Management Agency (PMA)</b> for major Production Linked Incentive (PLI) schemes 
+                    under the “Atmanirbhar Bharat” initiative and is the 
+                    <b>Verifying & Monitoring Agency</b> for several capital subsidy programmes.
+                </p>
+            </div>
+    
+            <!-- BLOCK 4 -->
+            <div class="ultra-card animate-up delay-3">
+                <h2>Corporate Advisory Services</h2>
+                <p>
+                    IFCI provides <b>financial advisory, ESG advisory, project advisory</b> and handles monitoring of 
+                    Sugar Development Fund (SDF) loans since 1984.
+                </p>
+            </div>
+    
+            <!-- BLOCK 5 -->
+            <div class="ultra-card animate-up delay-4">
+                <h2>Institution Building</h2>
+                <p>
+                    IFCI has played a crucial role in establishing stock exchanges, consultancy bodies, 
+                    entrepreneurship & skill development institutions across India.
+                </p>
+            </div>
+    
+            <!-- BLOCK 6 -->
+            <div class="ultra-card animate-up delay-5">
+                <h2>SC Entrepreneurship Initiatives</h2>
+                <p>
+                    Govt. of India created a <b>₹200 Cr Venture Capital Fund for Scheduled Castes</b> with IFCI as sponsor & lead investor.  
+                </p>
+                <p>
+                    IFCI Venture Capital Funds Ltd. manages this fund, supporting SC entrepreneurs.
+                </p>
+            </div>
+    
+            <!-- BLOCK 7 -->
+            <div class="ultra-card animate-up delay-6">
+                <h2>Credit Enhancement Scheme</h2>
+                <p>
+                    Since 2015, IFCI is the Nodal Agency for the 
+                    <b>Credit Enhancement Guarantee Scheme for Scheduled Castes</b>, helping SC entrepreneurs secure business loans.
+                </p>
+            </div>
+    
+        </div>
+    
+    </section>
+    
+</body>
+</html>

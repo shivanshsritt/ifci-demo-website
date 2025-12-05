@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>IFCI — The Journey So Far</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg: #f6fbff;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #00a8e6;
+  --accent-2: #00e1a8;
+  --dark: #0b2540;
+  --glass: rgba(255,255,255,0.6);
+}
+
+/* page reset */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg);
+  color:var(--dark);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* container */
+.journey-wrap{
+  max-width:1200px;
+  margin:40px auto;
+  padding:28px;
+}
+
+/* header */
+.journey-header{
+  text-align:center;
+  margin-bottom:28px;
+}
+.journey-header h1{
+  font-size:30px;
+  margin:0 0 8px 0;
+  font-weight:800;
+  color:var(--dark);
+}
+.journey-header p{
+  margin:0;
+  color:var(--muted);
+  font-size:15px;
+}
+
+/* layout grid */
+.journey-grid{
+  display:grid;
+  grid-template-columns: 1fr 420px;
+  gap:28px;
+  align-items:start;
+}
+
+/* timeline column */
+.timeline-col{
+  background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(248,251,255,0.9));
+  padding:18px 22px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(11,37,64,0.05);
+  position:relative;
+}
+
+/* svg container */
+.timeline-canvas{
+  width:100%;
+  height:220px;
+  position:relative;
+  overflow:visible;
+}
+
+/* markers row (for small screens fallback) */
+.markers-row{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+
+/* marker style (for mobile fallback) */
+.marker-mini{
+  background:#fff;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid #e6f2fb;
+  box-shadow:0 6px 18px rgba(10,30,60,0.04);
+  font-weight:600;
+  color:var(--dark);
+  font-size:14px;
+}
+
+/* right detail panel */
+.detail-panel{
+  background:var(--card);
+  border-radius:14px;
+  padding:18px;
+  height:100%;
+  box-shadow:0 10px 30px rgba(11,37,64,0.06);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.detail-title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.detail-title h2{
+  margin:0;
+  font-size:20px;
+}
+.badge{
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:white;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:13px;
+}
+
+/* detail body */
+.detail-body{
+  color:var(--muted);
+  line-height:1.65;
+  font-size:15px;
+  overflow:auto;
+}
+
+/* timeline progress bar (under svg) */
+.timeline-legend{
+  margin-top:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* marker (SVG group) style via classes */
+.marker-circle{
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.12));
+  transition: transform 0.35s cubic-bezier(.2,.9,.2,1), opacity .25s;
+  cursor:pointer;
+}
+.marker-label{
+  font-weight:600;
+  font-size:13px;
+  fill: var(--dark);
+  pointer-events:none;
+}
+
+/* active marker style */
+.marker-active .marker-circle {
+  transform: scale(1.18);
+}
+.marker-active .glow {
+  opacity:1;
+  transform:scale(1);
+}
+
+/* subtle glows */
+.glow{
+  fill: url(#gradGlow);
+  opacity:0;
+  transform-origin:center center;
+  transform: scale(.8);
+}
+
+/* pulse animation on active */
+@keyframes pulse {
+  0% { transform: scale(.9); opacity:0.9;}
+  70% { transform: scale(1.3); opacity:0.25;}
+  100% { transform: scale(1); opacity:0.0;}
+}
+
+/* small screen rules: stack grid */
+@media(max-width:980px){
+  .journey-grid{ grid-template-columns: 1fr; }
+  .timeline-canvas{ height:320px; }
+}
+
+/* number bullet under marker */
+.num-bullet{
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:white;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  width:36px;height:36px;border-radius:50%;
+  font-weight:700;
+  box-shadow:0 8px 20px rgba(0,140,200,0.14);
+}
+
+/* small caption text near marker */
+.marker-caption{
+  font-size:13px;
+  color:var(--dark);
+  font-weight:700;
+}
+
+/* timeline hint */
+.hint{
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* timeline controls */
+.controls{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.btn{
+  background:linear-gradient(90deg,#0a3f73,#6b8cff);
+  color:white;
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(10,60,140,0.12);
+}
+
+/* accessibility focus outlines */
+.marker-circle:focus { outline: 3px solid rgba(0,168,230,0.18); outline-offset:6px; }
+
+/* timeline arrows / path styling fallback for small screens */
+@media(max-width:560px){
+  .timeline-canvas{ height:420px; }
+  .detail-panel{ order:2; }
+}
+</style>
+</head>
+<body>
+
+<div class="journey-wrap">
+
+  <header class="journey-header">
+    <h1>The Journey So Far</h1>
+    <p>IFCI — evolution & milestones across the decades. Click any year to read the phase summary.</p>
+  </header>
+
+  <div class="journey-grid">
+
+    <!-- TIMELINE COLUMN -->
+    <div class="timeline-col">
+
+      <!-- SVG TIMELINE CANVAS -->
+      <div class="timeline-canvas" id="timelineCanvas" aria-hidden="false">
+        <!-- We'll draw a nice curved path and marker groups with inline SVG -->
+        <svg id="timelineSVG" viewBox="0 0 1000 220" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- defs for glow -->
+          <defs>
+            <linearGradient id="grad1" x1="0" x2="1">
+              <stop offset="0%" stop-color="#00a8e6"/>
+              <stop offset="100%" stop-color="#00e1a8"/>
+            </linearGradient>
+
+            <radialGradient id="gradGlow" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#c9f2ff" stop-opacity="0.95"/>
+              <stop offset="60%" stop-color="#a9f7e2" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#00d7b8" stop-opacity="0.18"/>
+            </radialGradient>
+
+            <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6"/>
+            </filter>
+          </defs>
+
+          <!-- curved path (soft arrow-like) -->
+          <path id="mainPath" d="M 40 180 C 200 60, 420 60, 560 130 C 680 190, 820 160, 960 80" stroke="rgba(10,30,80,0.08)" stroke-width="40" fill="none" stroke-linecap="round" />
+          <!-- thinner highlight -->
+          <path d="M 40 180 C 200 60, 420 60, 560 130 C 680 190, 820 160, 960 80" stroke="url(#grad1)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+          <!-- marker groups: position them along the path using coordinates -->
+          <!-- Marker A (1948) -->
+          <g class="marker" data-key="m1948" transform="translate(75,160)">
+            <circle class="glow" r="26" opacity="0.0"></circle>
+            <g class="marker-circle" tabindex="0" role="button" aria-label="1948 - Set up as India's first Development Financial Institution">
+              <circle r="10" fill="#fff" stroke="url(#grad1)" stroke-width="3"></circle>
+              <circle r="6" fill="#00a8e6"></circle>
+            </g>
+            <text x="-18" y="42" class="marker-caption">1948</text>
+          </g>
+
+          <!-- Marker B (1993) -->
+          <g class="marker" data-key="m1993" transform="translate(260,120)">
+            <circle class="glow" r="26"></circle>
+            <g class="marker-circle" tabindex="0" role="button" aria-label="1993 - Became a public limited company and was listed on the stock exchange">
+              <circle r="10" fill="#fff" stroke="url(#grad1)" stroke-width="3"></circle>
+              <circle r="6" fill="#25c3a6"></circle>
+            </g>
+            <text x="-22" y="-24" class="marker-caption">1993</text>
+          </g>
+
+          <!-- Marker C (1999 name change or 1999 effect?) -->
+          <g class="marker" data-key="m1999" transform="translate(420,100)">
+            <circle class="glow" r="26"></circle>
+            <g class="marker-circle" tabindex="0" role="button" aria-label="1999 - Renamed as IFCI Limited (company form) and restructured">
+              <circle r="10" fill="#fff" stroke="url(#grad1)" stroke-width="3"></circle>
+              <circle r="6" fill="#33b0ff"></circle>
+            </g>
+            <text x="-18" y="-28" class="marker-caption">1999</text>
+          </g>
+
+          <!-- Marker D (2015) -->
+          <g class="marker" data-key="m2015" transform="translate(610,120)">
+            <circle class="glow" r="26"></circle>
+            <g class="marker-circle" tabindex="0" role="button" aria-label="2015 - Became a Government company">
+              <circle r="10" fill="#fff" stroke="url(#grad1)" stroke-width="3"></circle>
+              <circle r="6" fill="#8cf07a"></circle>
+            </g>
+            <text x="-20" y="-30" class="marker-caption">2015</text>
+          </g>
+
+          <!-- Marker E (Today) -->
+          <g class="marker" data-key="mtoday" transform="translate(880,70)">
+            <circle class="glow" r="26"></circle>
+            <g class="marker-circle" tabindex="0" role="button" aria-label="Today - An established NBFC-ND-SI in the economy">
+              <circle r="10" fill="#fff" stroke="url(#grad1)" stroke-width="3"></circle>
+              <circle r="6" fill="#00d6b8"></circle>
+            </g>
+            <text x="-18" y="-40" class="marker-caption">Today</text>
+          </g>
+
+        </svg>
+      </div>
+
+      <!-- hint and controls -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+        <div class="hint">Click a year to view the phase — or use play ▶</div>
+        <div class="controls">
+          <button class="btn" id="playBtn">Play ▶</button>
+          <button class="btn" id="resetBtn" style="background:#e6eef8;color:var(--dark)">Reset</button>
+        </div>
+      </div>
+
+      <!-- mobile fallback markers row -->
+      <div class="markers-row" id="markersRow" style="display:none">
+        <!-- JS will populate fallback markers on tiny screens -->
+      </div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <aside class="detail-panel" id="detailPanel">
+      <div class="detail-title">
+        <div class="num-bullet" id="detailYear">1948</div>
+        <h2 id="detailHeading">Set up as India's first Development Financial Institution</h2>
+        <div style="flex:1"></div>
+        <div class="badge" id="detailBadge">Milestone</div>
+      </div>
+
+      <div class="detail-body" id="detailBody">
+        <p>
+          At the time of independence in 1947, the Indian capital markets were relatively less developed.
+          Against this backdrop and to bridge the demand-supply gap for capital needs of the economy,
+          the Government of India established The Industrial Finance Corporation of India (IFCI) on
+          <strong>1st July 1948</strong> by enacting the IFC Act, 1948. IFCI was the first Development Financial Institution of India
+          set up to propel economic growth through development of infrastructure and industry.
+        </p>
+
+        <p style="margin-top:12px;color:var(--muted);font-size:14px;">
+          Tip: Click other years on the timeline to read phase summaries.
+        </p>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<script>
+/*
+  Interactive timeline JS
+  - marker data map
+  - click handlers
+  - play sequence animation
+*/
+
+(function(){
+  // data map for each marker key
+  const dataMap = {
+    m1948: {
+      year: '1948',
+      title: 'Set up as India’s first Development Financial Institution (DFI)',
+      body: `At independence the capital markets were underdeveloped. To bridge the demand-supply for long-term industry capital,
+      the Government established IFCI on <strong>1 July 1948</strong> by the IFC Act, 1948. IFCI became the first DFI to support infrastructure & industry projects.`
+    },
+    m1993: {
+      year: '1993',
+      title: 'Became a public limited company and was listed on stock exchange',
+      body: `Following liberalisation and changes in the financial system, IFCI was reconstituted and in 1993 it became a public limited company.
+      The company then moved to raise funds through the capital markets and listing on stock exchanges.`
+    },
+    m1999: {
+      year: '1999',
+      title: 'Restructuring & transition to IFCI Limited',
+      body: `In response to market changes and regulatory frameworks, IFCI transitioned to a company structure and the name IFCI Limited
+      became effective towards the end of the 1990s as part of institutional restructuring.`
+    },
+    m2015: {
+      year: '2015',
+      title: 'Became a Government company',
+      body: `IFCI continued to evolve its role in the economy and in 2015 it was formally re-classified as a Government company,
+      strengthening its public-sector mandate to support national infrastructure financing and advisory activities.`
+    },
+    mtoday: {
+      year: 'Today',
+      title: 'An established NBFC-ND-SI in the economy',
+      body: `Today IFCI is a Systemically Important NBFC (Non-Deposit taking) in the public sector. It provides lending and advisory services,
+      acts as nodal and verifying/monitoring agency for various government schemes, and has played a key role in setting up market intermediaries.`
+    }
+  };
+
+  const svg = document.getElementById('timelineSVG');
+  const markers = Array.from(svg.querySelectorAll('.marker'));
+  const panel = document.getElementById('detailPanel');
+  const detailYear = document.getElementById('detailYear');
+  const detailHeading = document.getElementById('detailHeading');
+  const detailBody = document.getElementById('detailBody');
+  const playBtn = document.getElementById('playBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  let current = markers[0]; // default
+  let autoplay = null;
+  let idx = 0;
+
+  // helper to set active marker
+  function setActiveMarker(gNode){
+    markers.forEach(m => m.classList.remove('marker-active'));
+    gNode.classList.add('marker-active');
+
+    // visual animation: pulse for glow
+    const glow = gNode.querySelector('.glow');
+    if(glow){
+      glow.style.opacity = 1;
+      glow.style.transition = 'opacity 0.45s ease, transform 0.6s ease';
+      glow.style.transform = 'scale(1)';
+      setTimeout(()=> {
+        glow.style.opacity = 0.25;
+        glow.style.transform = 'scale(1.12)';
+      }, 400);
+    }
+
+    // update detail panel
+    const key = gNode.dataset.key;
+    const info = dataMap[key];
+    if(info){
+      detailYear.textContent = info.year;
+      detailHeading.innerHTML = info.title;
+      detailBody.innerHTML = `<p>${info.body}</p>
+        <p style="margin-top:12px;color:var(--muted);font-size:14px;">Source: IFCI historical records & summary.</p>`;
+    }
+
+    // focus for accessibility
+    const btn = gNode.querySelector('.marker-circle');
+    if(btn) btn.focus();
+  }
+
+  // attach click & keyboard handlers
+  markers.forEach((g, i) => {
+    const btn = g.querySelector('.marker-circle');
+    if(!btn) return;
+    // click
+    btn.addEventListener('click', ()=> {
+      clearAutoplay();
+      setActiveMarker(g);
+      current = g;
+      idx = i;
+    });
+    // keyboard: Enter/Space
+    btn.addEventListener('keydown', (ev)=> {
+      if(ev.key === 'Enter' || ev.key === ' '){
+        ev.preventDefault();
+        clearAutoplay();
+        setActiveMarker(g);
+        current = g;
+        idx = i;
+      }
+    });
+  });
+
+  // autoplay sequence
+  function startAutoplay(){
+    if(autoplay) return;
+    playBtn.textContent = 'Pause ⏸';
+    autoplay = setInterval(()=> {
+      idx = (idx + 1) % markers.length;
+      const g = markers[idx];
+      setActiveMarker(g);
+    }, 2200);
+  }
+  function clearAutoplay(){
+    if(autoplay) clearInterval(autoplay);
+    autoplay = null;
+    playBtn.textContent = 'Play ▶';
+  }
+
+  // play button
+  playBtn.addEventListener('click', ()=> {
+    if(autoplay) clearAutoplay();
+    else startAutoplay();
+  });
+
+  resetBtn.addEventListener('click', ()=> {
+    clearAutoplay();
+    idx = 0;
+    setActiveMarker(markers[0]);
+  });
+
+  // initialize (choose first marker)
+  setTimeout(()=> setActiveMarker(markers[0]), 200);
+
+  // accessibility: keyboard navigation between markers (left/right arrow)
+  document.addEventListener('keydown', (ev)=> {
+    if(ev.key === 'ArrowRight'){
+      ev.preventDefault();
+      clearAutoplay();
+      idx = (idx + 1) % markers.length;
+      setActiveMarker(markers[idx]);
+    } else if(ev.key === 'ArrowLeft'){
+      ev.preventDefault();
+      clearAutoplay();
+      idx = (idx - 1 + markers.length) % markers.length;
+      setActiveMarker(markers[idx]);
+    }
+  });
+
+  // responsiveness: if tiny screen, display mini markers row
+  function renderMobileFallback(){
+    const mr = document.getElementById('markersRow');
+    if(!mr) return;
+    if(window.innerWidth < 560){
+      mr.style.display = 'flex';
+      mr.innerHTML = ''; // populate
+      markers.forEach(g => {
+        const key = g.dataset.key;
+        const info = dataMap[key];
+        const btn = document.createElement('button');
+        btn.className = 'marker-mini';
+        btn.innerHTML = `<strong>${info.year}</strong><div style="font-size:13px;color:var(--muted)">${info.title.split(' ').slice(0,5).join(' ')}…</div>`;
+        btn.onclick = ()=> {
+          setActiveMarker(g);
+          window.scrollTo({top:0, behavior:'smooth'});
+        };
+        mr.appendChild(btn);
+      });
+    } else {
+      mr.style.display = 'none';
+    }
+  }
+
+  window.addEventListener('resize', renderMobileFallback);
+  renderMobileFallback();
+
+})();
+</script>
+
+</body>
+</html>

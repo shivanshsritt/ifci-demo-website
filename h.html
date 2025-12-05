@@ -1,0 +1,147 @@
+<!-- ======= MODERN GRADIENT TICKER - EXAMPLE ======= -->
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>IFCI Modern Ticker Example</title>
+
+<style>
+/* ---------- MODERN GRADIENT TICKER (FINAL EXAMPLE) ---------- */
+
+.ticker-bar {
+    background: linear-gradient(90deg, #007cbf 0%, #00AEEF 50%, #29C3FF 100%);
+    height: 22px;                    /* slim height */
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 0 12px;
+    position: relative;
+    line-height: 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Wrapper that holds the moving content (inline-flex so width fits content) */
+.ticker-track {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    will-change: transform;
+    animation: scrollText 18s linear infinite;
+}
+
+/* Each message capsule (optional visual separation) */
+.ticker-item {
+    display: inline-block;
+    padding: 0 26px 0 0; /* spacing between items */
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.2px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+
+/* pause/play button */
+.ticker-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(3px);
+    color: #0077b6;
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform .12s ease, background .12s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+.ticker-btn:hover { transform: translateY(-50%) scale(1.05); }
+
+/* accessible focus */
+.ticker-btn:focus { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 2px; }
+
+/* animation */
+@keyframes scrollText {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* When JS sets .paused on .ticker-track we pause the animation */
+.ticker-track.paused {
+    animation-play-state: paused !important;
+}
+
+/* Small responsive tweak */
+@media (max-width:480px) {
+    .ticker-bar { padding: 0 8px; }
+    .ticker-item { padding-right: 18px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TICKER HTML -->
+<div class="ticker-bar" role="region" aria-label="IFCI Latest updates">
+    <!-- The .ticker-track contains the repeated items to make a continuous scroll -->
+    <div class="ticker-track" id="tickerTrack" aria-hidden="false">
+        <span class="ticker-item">IFCI: Annual General Meeting held on October 29, 2025 — Watch now.</span>
+        <span class="ticker-item">IFCI: Dividend declared for FY 2024-25 — Check details on website.</span>
+        <span class="ticker-item">IFCI: New policy updates released. Read circulars in the Press Releases section.</span>
+
+        <!-- Duplicate the items sequence (helps make the loop continuous) -->
+        <span class="ticker-item">IFCI: Annual General Meeting held on October 29, 2025 — Watch now.</span>
+        <span class="ticker-item">IFCI: Dividend declared for FY 2024-25 — Check details on website.</span>
+        <span class="ticker-item">IFCI: New policy updates released. Read circulars in the Press Releases section.</span>
+    </div>
+
+    <!-- Pause / Play button -->
+    <button class="ticker-btn" id="tickerBtn" aria-pressed="false" aria-label="Pause news ticker">❚❚</button>
+</div>
+
+<!-- Minimal JS to toggle pause/play -->
+<script>
+(function(){
+    var track = document.getElementById('tickerTrack');
+    var btn = document.getElementById('tickerBtn');
+    var isPaused = false;
+
+    // Toggle function
+    function toggleTicker(){
+        isPaused = !isPaused;
+        if(isPaused){
+            track.classList.add('paused');
+            btn.innerText = '▶';                // shows play icon
+            btn.setAttribute('aria-pressed','true');
+            btn.setAttribute('aria-label','Play news ticker');
+        } else {
+            track.classList.remove('paused');
+            btn.innerText = '❚❚';              // shows pause icon
+            btn.setAttribute('aria-pressed','false');
+            btn.setAttribute('aria-label','Pause news ticker');
+        }
+    }
+
+    // Click or keyboard activation
+    btn.addEventListener('click', toggleTicker);
+    btn.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleTicker(); }
+    });
+
+    // Optionally pause on hover for easier reading
+    track.parentElement.addEventListener('mouseenter', function(){ track.classList.add('paused'); btn.innerText = '▶'; btn.setAttribute('aria-pressed','true'); });
+    track.parentElement.addEventListener('mouseleave', function(){ if(!isPaused){ track.classList.remove('paused'); btn.innerText = '❚❚'; btn.setAttribute('aria-pressed','false'); } });
+})();
+</script>
+
+</body>
+</html>

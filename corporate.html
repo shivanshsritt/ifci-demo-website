@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* -------- IFCI CORPORATE STRATEGY PAGE -------- */
+
+.ifci-strategy-page {
+    font-family: "Inter", sans-serif;
+    padding: 60px 80px;
+    background: #f6fbff;
+    color: #1f2d3d;
+}
+
+/* HEADER */
+.strategy-hero {
+    text-align: center;
+    padding: 45px 20px;
+    background: linear-gradient(135deg, #eaf6ff, #ffffff);
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    margin-bottom: 60px;
+}
+
+.strategy-hero h1 {
+    font-size: 44px;
+    font-weight: 800;
+    color: #043f7f;
+}
+
+.strategy-hero p {
+    font-size: 18px;
+    opacity: .7;
+    margin-top: 8px;
+}
+
+/* GRID */
+.strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 35px;
+}
+
+/* STRATEGY CARDS */
+.strategy-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 30px 25px;
+    box-shadow: 0 12px 26px rgba(0,0,0,0.06);
+    border: 1px solid #e7e7e7;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    transition: .3s ease;
+}
+
+.strategy-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+.icon-box {
+    width: 55px;
+    height: 55px;
+    background: #e9f4ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+/* TEXT */
+.strategy-card p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #233548;
+}
+
+/* ANIMATIONS */
+.animate-fade {
+    opacity: 0;
+    animation: fadeIn 1s forwards ease;
+}
+
+.animate-up {
+    opacity: 0;
+    animation: slideUp .9s forwards ease;
+}
+
+.delay-1 { animation-delay: .2s; }
+.delay-2 { animation-delay: .4s; }
+.delay-3 { animation-delay: .6s; }
+
+@keyframes slideUp {
+    0% { opacity: 0; transform: translateY(45px); }
+    100% { opacity: 1; transform: translateY(0px); }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .ifci-strategy-page {
+        padding: 25px;
+    }
+
+    .strategy-hero h1 {
+        font-size: 32px;
+    }
+}
+
+</style>
+<body>
+    <section class="ifci-strategy-page">
+
+        <!-- Header -->
+        <div class="strategy-hero animate-fade">
+            <h1>Corporate Strategy</h1>
+            <p>Driving Growth Through Vision, Innovation & Financial Empowerment</p>
+        </div>
+    
+        <!-- List Section -->
+        <div class="strategy-grid">
+    
+            <div class="strategy-card animate-up">
+                <div class="icon-box"></div>
+                <p>To be a solution provider to various financial needs of the industry</p>
+            </div>
+    
+            <div class="strategy-card animate-up delay-1">
+                <div class="icon-box"></div>
+                <p>To remain competitive, competent and sensitive to the economic growth of the Country</p>
+            </div>
+    
+            <div class="strategy-card animate-up delay-2">
+                <div class="icon-box"></div>
+                <p>To design customer focused solutions</p>
+            </div>
+    
+            <div class="strategy-card animate-up delay-3">
+                <div class="icon-box"></div>
+                <p>To enhance the reputation and image of IFCI</p>
+            </div>
+    
+        </div>
+    
+    </section>
+      
+</body>
+</html>
